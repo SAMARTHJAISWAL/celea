@@ -29,7 +29,7 @@ Celea is an AI-powered video generation platform that automates the video refine
 ### Installation
 1. Clone the repository:
 ```bash
-git clone https://github.com/Aryan-333/celea.git
+git clone https://github.com/SAMARTHJAISWAL/celea.git
 cd celea
 ```
 2. Install dependencies:
