@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { timingSafeEqual } from "crypto";
 
 /**
  * Admin endpoint to view and manage waitlist
@@ -7,6 +8,7 @@ import { db } from "@/lib/db";
  * SECURITY: Protected by ADMIN_API_KEY environment variable
  * 
  * Usage:
+ * GET /api/admin/waitlist            (header  x-admin-key: YOUR_ADMIN_API_KEY)
  * GET /api/admin/waitlist?key=YOUR_ADMIN_API_KEY
  * GET /api/admin/waitlist?key=YOUR_ADMIN_API_KEY&format=csv
  * GET /api/admin/waitlist?key=YOUR_ADMIN_API_KEY&status=pending
@@ -19,8 +21,13 @@ function verifyAdminKey(request: NextRequest): boolean {
     return false;
   }
   
-  const providedKey = request.nextUrl.searchParams.get("key");
-  return providedKey === adminKey;
+  // Prefer the header; the ?key= query param is kept for backwards compatibility
+  const providedKey =
+    request.headers.get("x-admin-key") ?? request.nextUrl.searchParams.get("key");
+  if (!providedKey) return false;
+  const a = Buffer.from(providedKey);
+  const b = Buffer.from(adminKey);
+  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 export async function GET(request: NextRequest) {

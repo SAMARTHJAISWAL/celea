@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { inngest } from "@/inngest/client";
 import { z } from "zod";
+import { isAllowedMediaUrl } from "@/lib/media-url";
 import { PIPELINE_CONFIG, validateVideoSettings } from "@/lib/prompts";
 
 const pipelineSchema = z.object({
@@ -10,7 +11,7 @@ const pipelineSchema = z.object({
   referenceImages: z
     .array(
       z.object({
-        url: z.string(),
+        url: z.string().refine((u) => isAllowedMediaUrl(u), "URL host not allowed"),
         filename: z.string(),
       })
     )

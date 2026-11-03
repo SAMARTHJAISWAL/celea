@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analyzeVideo } from "@/lib/ai/gemini";
 import { z } from "zod";
+import { isAllowedMediaUrl } from "@/lib/media-url";
 
 const analyzeSchema = z.object({
-  videoUrl: z.string().url(),
+  videoUrl: z.string().url().refine((u) => isAllowedMediaUrl(u), "URL host not allowed"),
   userGoal: z.string().min(1),
   enhancedPrompt: z.string().optional(), // The prompt used to generate the video
 });

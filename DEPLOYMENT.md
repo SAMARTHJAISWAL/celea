@@ -53,7 +53,7 @@ Inngest handles the long-running video generation while Vercel serves the fronte
 
 ```bash
 # If not already done
-cd /Users/aryanmangla/Desktop/Celea
+cd celea
 git remote add origin https://github.com/YOUR_USERNAME/celea.git
 git push -u origin main
 ```
@@ -119,6 +119,10 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 
 GOOGLE_AI_API_KEY=AIza...
 
+INVITE_SECRET=<long random string>
+INVITE_CODES=CODE01,CODE02
+ADMIN_API_KEY=<long random string>
+
 INNGEST_EVENT_KEY=...
 INNGEST_SIGNING_KEY=...
 ```
@@ -131,12 +135,12 @@ After deployment:
 
 ```bash
 # Run Prisma migrations
-bunx prisma db push
+npx prisma db push
 ```
 
 Or do it locally before deployment:
 ```bash
-DATABASE_URL="your-supabase-url" bunx prisma db push
+DATABASE_URL="your-supabase-url" npx prisma db push
 ```
 
 ### Step 7: Connect Inngest to Vercel
@@ -163,6 +167,10 @@ DATABASE_URL="your-supabase-url" bunx prisma db push
 | `GOOGLE_AI_API_KEY` | Google AI Studio → API Keys |
 | `INNGEST_EVENT_KEY` | Inngest → App Settings |
 | `INNGEST_SIGNING_KEY` | Inngest → App Settings |
+| `INVITE_SECRET` | Any long random string (`openssl rand -hex 32`); required in production |
+| `INVITE_CODES` | Comma-separated 6-character invite codes you hand out |
+| `ADMIN_API_KEY` | Any long random string; protects `/api/admin/waitlist` |
+| `GEMINI_MODEL` / `VEO_MODEL` | Optional model overrides (see README) |
 
 ---
 
@@ -201,7 +209,7 @@ With free tiers, you can generate approximately:
 
 ## 🔄 Development vs Production
 
-| Feature | Development (`bun dev`) | Production (Vercel) |
+| Feature | Development (`npm run dev`) | Production (Vercel) |
 |---------|------------------------|---------------------|
 | Pipeline execution | Direct (in-process) | Inngest (background job) |
 | Function timeout | Unlimited | 10 seconds (API), 2 hours (Inngest) |

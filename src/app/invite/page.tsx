@@ -24,6 +24,13 @@ export default function InvitePage() {
   const modalRef = useRef<HTMLDivElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
 
+  const closeModal = () => {
+    setShowWaitlistModal(false);
+    setEmail("");
+    setEmailError("");
+    setWaitlistSuccess(false);
+  };
+
   // Close modal on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -41,13 +48,6 @@ export default function InvitePage() {
       setTimeout(() => emailInputRef.current?.focus(), 100);
     }
   }, [showWaitlistModal]);
-
-  const closeModal = () => {
-    setShowWaitlistModal(false);
-    setEmail("");
-    setEmailError("");
-    setWaitlistSuccess(false);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
