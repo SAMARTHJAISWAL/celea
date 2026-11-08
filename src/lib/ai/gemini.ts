@@ -19,7 +19,8 @@ import {
   buildVideoAnalysisPrompt,
 } from "@/lib/prompts";
 
-const GEMINI_MODEL = "gemini-2.5-pro";
+// gemini-2.5-pro is deprecated (shutdown Dec 1, 2026); override with GEMINI_MODEL
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
 // =============================================================================
 // PROMPT ENHANCEMENT (Replaces GPT-4o)

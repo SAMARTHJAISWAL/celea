@@ -30,19 +30,15 @@ export async function googleAIRequest<T>(
   const apiKey = getApiKey();
   const { method = "GET", body, headers = {} } = options;
 
-  // Build URL - always include API key in URL
-  let url: string;
-  if (endpoint.startsWith("http")) {
-    url = `${endpoint}${endpoint.includes("?") ? "&" : "?"}key=${apiKey}`;
-  } else {
-    url = `${GOOGLE_AI_BASE_URL}${endpoint}?key=${apiKey}`;
-  }
+  // The API key is sent in the x-goog-api-key header (never in the URL,
+  // so it cannot leak into logs)
+  const url = endpoint.startsWith("http") ? endpoint : `${GOOGLE_AI_BASE_URL}${endpoint}`;
 
   console.log("\n" + "=".repeat(80));
   console.log(`[Google AI] REQUEST`);
   console.log("=".repeat(80));
   console.log(`[Google AI] Method: ${method}`);
-  console.log(`[Google AI] URL: ${url.replace(apiKey, "API_KEY_HIDDEN")}`);
+  console.log(`[Google AI] URL: ${url}`);
   
   // Log FULL request body (no truncation)
   if (body) {
@@ -114,10 +110,11 @@ export async function uploadFileToGoogleAI(
 
   // Step 1: Start resumable upload
   const startResponse = await fetch(
-    `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/upload/v1beta/files`,
     {
       method: "POST",
       headers: {
+        "x-goog-api-key": apiKey,
         "X-Goog-Upload-Protocol": "resumable",
         "X-Goog-Upload-Command": "start",
         "X-Goog-Upload-Header-Content-Length": String(fileBuffer.length),
@@ -184,9 +181,9 @@ export async function waitForFileProcessing(
   console.log(`[Google AI] Waiting for file processing: ${fileName}`);
 
   while (Date.now() - startTime < maxWaitMs) {
-    const response = await fetch(
-      `${GOOGLE_AI_BASE_URL}/files/${fileName}?key=${apiKey}`
-    );
+    const response = await fetch(`${GOOGLE_AI_BASE_URL}/files/${fileName}`, {
+      headers: { "x-goog-api-key": apiKey },
+    });
     const fileInfo = await response.json();
 
     console.log(`[Google AI] File state: ${fileInfo.state}`);
@@ -215,8 +212,9 @@ export async function waitForFileProcessing(
 export async function deleteFileFromGoogleAI(fileName: string): Promise<void> {
   const apiKey = getApiKey();
   console.log(`[Google AI] Deleting file: ${fileName}`);
-  await fetch(`${GOOGLE_AI_BASE_URL}/${fileName}?key=${apiKey}`, {
+  await fetch(`${GOOGLE_AI_BASE_URL}/${fileName}`, {
     method: "DELETE",
+    headers: { "x-goog-api-key": apiKey },
   });
   console.log(`[Google AI] File deleted: ${fileName}`);
 }
@@ -226,13 +224,9 @@ export async function deleteFileFromGoogleAI(fileName: string): Promise<void> {
  */
 export async function downloadFromGoogleAI(uri: string): Promise<Buffer> {
   const apiKey = getApiKey();
-  const downloadUrl = uri.includes("?")
-    ? `${uri}&key=${apiKey}`
-    : `${uri}?key=${apiKey}`;
+  console.log(`[Google AI] Downloading from: ${uri}`);
 
-  console.log(`[Google AI] Downloading from: ${downloadUrl.replace(apiKey, "API_KEY_HIDDEN")}`);
-
-  const response = await fetch(downloadUrl, {
+  const response = await fetch(uri, {
     headers: {
       "x-goog-api-key": apiKey,
     },

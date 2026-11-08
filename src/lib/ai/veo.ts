@@ -13,7 +13,9 @@ import { VEO_CONFIG } from "@/lib/prompts";
 import { createAdminClient } from "@/lib/supabase/server";
 import { v4 as uuidv4 } from "uuid";
 
-const VEO_MODEL = "veo-3.1-generate-preview";
+// NOTE: Google shut down the Veo 3.1 preview models on the Gemini API on
+// Oct 22, 2026. Set VEO_MODEL to a model your key can still reach; see README.
+const VEO_MODEL = process.env.VEO_MODEL || "veo-3.1-generate-preview";
 const GOOGLE_AI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
 
 /**

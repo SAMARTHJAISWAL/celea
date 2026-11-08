@@ -30,11 +30,6 @@ export default function ProjectsPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch projects on mount
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
   const fetchProjects = async () => {
     try {
       setIsLoading(true);
@@ -53,6 +48,13 @@ export default function ProjectsPage() {
       setIsLoading(false);
     }
   };
+
+  // Fetch projects on mount
+  useEffect(() => {
+    // Data fetch on mount; the loading state it sets is intentional.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchProjects();
+  }, []);
 
   const handleCreateProject = async () => {
     if (!newProjectName.trim()) return;

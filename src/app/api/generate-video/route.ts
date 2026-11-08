@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateVideo } from "@/lib/ai/veo";
 import { z } from "zod";
+import { isAllowedMediaUrl } from "@/lib/media-url";
 
 const generateSchema = z.object({
   prompt: z.string().min(1),
-  referenceImageUrls: z.array(z.string()).max(3).optional(),
+  referenceImageUrls: z.array(z.string().refine((u) => isAllowedMediaUrl(u), "URL host not allowed")).max(3).optional(),
   aspectRatio: z.enum(["16:9", "9:16"]).default("16:9"),
   resolution: z.enum(["720p", "1080p"]).default("1080p"),
   duration: z.number().refine((v) => [4, 6, 8].includes(v)).default(8),

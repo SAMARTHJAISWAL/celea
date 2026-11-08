@@ -10,13 +10,12 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Celea | AI-Native Video Automation for Hollywood",
   description:
-    "Transform your video production with AI-powered automation. Generate cinematic videos with intelligent refinement loops using GPT-4o, Veo 3.1, and Gemini 2.5 Pro.",
+    "Transform your video production with AI-powered automation. Generate cinematic videos with intelligent refinement loops using Google Gemini and Veo.",
   keywords: [
     "AI video generation",
     "Hollywood automation",
     "video production",
     "Veo 3.1",
-    "GPT-4o",
     "Gemini",
     "cinematic AI",
   ],

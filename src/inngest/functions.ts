@@ -126,7 +126,7 @@ export const videoPipeline = inngest.createFunction(
                 referenceImages.push(Buffer.from(await response.arrayBuffer()));
               }
             } catch (e) {
-              console.error("Failed to download reference image:", url);
+              console.error("Failed to download reference image:", url, e);
             }
           }
 
