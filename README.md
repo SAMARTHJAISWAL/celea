@@ -149,3 +149,9 @@ src/inngest/                Inngest client and pipeline function (production)
 src/stores/pipeline-store.ts Zustand store (currently unused)
 tests/                      Unit tests
 ```
+
+## Licence
+
+[MIT](LICENSE) © 2026 Samarth Jaiswal
+
+The MIT licence covers the source code. Images, video and other media in this repository are not covered.
